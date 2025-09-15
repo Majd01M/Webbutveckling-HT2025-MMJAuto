@@ -7,4 +7,3 @@ const PORT = process.env.PORT || 4000
 http.createServer(app).listen(PORT, () => {
   console.log(`MMJAuto backend running at http://localhost:${PORT}`)
 })
-
