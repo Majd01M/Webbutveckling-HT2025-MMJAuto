@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 
+// Attributes only (fits course preference)
 const UserSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -11,4 +12,3 @@ const UserSchema = new mongoose.Schema(
 )
 
 export default mongoose.model('User', UserSchema)
-
