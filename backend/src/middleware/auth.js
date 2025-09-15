@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 
+// Require a valid JWT
 export const requireAuth = (req, res, next) => {
   const header = req.headers.authorization || ''
   const token = header.startsWith('Bearer ') ? header.slice(7) : null
@@ -12,8 +13,10 @@ export const requireAuth = (req, res, next) => {
   }
 }
 
+// Require a specific role (e.g., 'admin')
 export const requireRole = (role) => (req, res, next) => {
   if (!req.user || req.user.role !== role) return res.status(403).json({ message: 'Forbidden' })
   next()
 }
+
 
