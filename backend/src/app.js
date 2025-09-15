@@ -6,21 +6,29 @@ import { connectDB } from './config/db.js'
 import authRoutes from './routes/authRoutes.js'
 
 const app = express()
+
+// Connect DB (MERN + persistence ✅)
 connectDB()
 
+// Security & parsing
 app.use(helmet())
-app.use(cors({ origin: process.env.CLIENT_URL || '*' }))
+app.use(cors({
+  origin: (process.env.CLIENT_URL || '*').split(','),
+  credentials: true
+}))
 app.use(express.json())
 app.use(morgan('dev'))
 
-app.get('/', (req, res) => res.json({ msg: 'MMJAuto API is live 🚗' }))
+// Health check
+app.get('/', (req, res) => res.json({ ok: true, name: 'MMJAuto API' }))
 
+// MVC routes
 app.use('/api/auth', authRoutes)
 
 // 404
 app.use((req, res) => res.status(404).json({ message: 'Not found' }))
 
-// error handler
+// Error handler
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   console.error(err)
@@ -28,3 +36,4 @@ app.use((err, req, res, next) => {
 })
 
 export default app
+
