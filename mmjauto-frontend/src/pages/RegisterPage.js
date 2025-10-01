@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { loginUser } from "../services/api";
+import { registerUser } from "../services/api";
 import {
   Container,
   TextField,
@@ -9,18 +9,19 @@ import {
   Alert,
 } from "@mui/material";
 
-function LoginPage() {
+export default function RegisterPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const data = await loginUser(email, password);
-      setMessage(`Welcome ${data.name} (role: ${data.role})`);
+      const data = await registerUser(name, email, password);
+      setMessage(`Registered ${data.name} successfully!`);
     } catch (error) {
-      setMessage(error.response?.data?.message || "Login failed");
+      setMessage(error.response?.data?.message || "Registration failed");
     }
   };
 
@@ -28,12 +29,20 @@ function LoginPage() {
     <Container maxWidth="sm">
       <Box sx={{ mt: 8, p: 4, boxShadow: 3, borderRadius: 2 }}>
         <Typography variant="h4" align="center" gutterBottom>
-          Login
+          Register
         </Typography>
 
         {message && <Alert severity="info">{message}</Alert>}
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleRegister}>
+          <TextField
+            label="Name"
+            fullWidth
+            margin="normal"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
           <TextField
             label="Email"
             type="email"
@@ -59,12 +68,10 @@ function LoginPage() {
             fullWidth
             sx={{ mt: 2 }}
           >
-            Login
+            Register
           </Button>
         </form>
       </Box>
     </Container>
   );
 }
-
-export default LoginPage;
