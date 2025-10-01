@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors"; // 
 import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/authRoutes.js";
@@ -9,31 +10,36 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import { errorHandler } from "./middlewares/errorMiddleware.js";
 
-
-
-
 dotenv.config();
 connectDB();
 
 const app = express();
+
+// Enable CORS for all routes (development)
+app.use(cors({
+  origin: "http://localhost:3000", // frontend URL
+}));
+
 app.use(express.json());
 
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/carmodels", carModelRoutes);
 app.use("/api/carparts", carPartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/notifications", notificationRoutes);
+
+// Error handler
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5001;
-app.get('/', (req, res) => {
-    res.send('start page');
-    
-    
-  });
+// Test endpoints
+app.get("/", (req, res) => {
+  res.send("Start page");
+});
 
-app.get('/auth', (req, res) => {
-    res.send('auth backend is running!');
-  });
-  
+app.get("/auth", (req, res) => {
+  res.send("Auth backend is running!");
+});
+
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

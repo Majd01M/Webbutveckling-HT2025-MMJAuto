@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
 
-const carModelSchema = mongoose.Schema(
-  {
-    brand: { type: String, required: true },
-    name: { type: String, required: true },
-    year: { type: Number, required: true }
-  },
-  { timestamps: true }
-);
+const carModelSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  brand: { type: String, required: true },
+  year: { type: Number, required: true },
+  image: { type: String }, // ✅ add this
+});
 
-export default mongoose.model("CarModel", carModelSchema);
+const CarModel = mongoose.model("CarModel", carModelSchema);
+export default CarModel;
