@@ -12,8 +12,8 @@ export const getCarModelById = async (req, res) => {
 };
 
 export const createCarModel = async (req, res) => {
-  const { brand, name, year } = req.body;
-  const model = new CarModel({ brand, name, year });
+  const { brand, name, year,image } = req.body;
+  const model = new CarModel({ brand, name, year , image });
   const createdModel = await model.save();
   res.status(201).json(createdModel);
 };
