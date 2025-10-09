@@ -14,15 +14,18 @@ export const getCarModels = async () => {
 };
 
 // Get Car Parts
-export const getCarParts = async () => {
+export const getCarParts = async (searchTerm = "") => {
   try {
-    const res = await axios.get(`${API_URL}/carparts`);
+    const res = await axios.get(`${API_URL}/carparts`, {
+      params: { search: searchTerm },
+    });
     return res.data || [];
   } catch (err) {
     console.error("Failed to fetch car parts:", err);
     return [];
   }
 };
+
 
 // Login User
 export const loginUser = async (email, password) => {
