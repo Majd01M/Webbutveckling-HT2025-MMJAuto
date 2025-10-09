@@ -8,20 +8,38 @@ import {
   CardContent,
   Typography,
   CircularProgress,
+  TextField,
 } from "@mui/material";
 
 export default function CarModelsPage() {
-  const [models, setModels] = useState([]);
+  const [carModels, setCarModels] = useState([]);
+  const [filteredModels, setFilteredModels] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchModels = async () => {
       const data = await getCarModels();
-      setModels(data);
+      setCarModels(data);
+      setFilteredModels(data);
       setLoading(false);
     };
     fetchModels();
   }, []);
+
+  // filter by search input
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearch(value);
+    setFilteredModels(
+      carModels.filter(
+        (model) =>
+          model.brand.toLowerCase().includes(value) ||
+          model.name.toLowerCase().includes(value) ||
+          model.year.toString().includes(value)
+      )
+    );
+  };
 
   if (loading) return <CircularProgress sx={{ mt: 4 }} />;
 
@@ -31,22 +49,38 @@ export default function CarModelsPage() {
         Car Models
       </Typography>
 
+      {/* 🔍 Search input */}
+      <TextField
+        fullWidth
+        label="Search for car models"
+        variant="outlined"
+        value={search}
+        onChange={handleSearch}
+        sx={{ mb: 4 }}
+      />
+
       <Grid container spacing={3}>
-        {models.map((model) => (
+        {filteredModels.map((model) => (
           <Grid item xs={12} sm={6} md={4} key={model._id}>
             <Card sx={{ boxShadow: 3 }}>
-              {/* ✅ Display image */}
               {model.image && (
                 <CardMedia
                   component="img"
-                  height="200"
+                  height="180"
                   image={model.image}
                   alt={model.name}
                 />
               )}
               <CardContent>
-                <Typography variant="h6">{model.brand} {model.name}</Typography>
-                <Typography color="text.secondary">Year: {model.year}</Typography>
+                <Typography variant="h6">
+                  {model.brand} {model.name}
+                </Typography>
+                <Typography color="text.secondary">
+                  Year: {model.year}
+                </Typography>
+                <Typography color="text.secondary">
+                  Type: {model.type}
+                </Typography>
               </CardContent>
             </Card>
           </Grid>
