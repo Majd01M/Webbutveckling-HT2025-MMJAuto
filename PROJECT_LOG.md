@@ -2,7 +2,11 @@
 
 
 
-**Contributor:** Majd Morad : 
+
+
+
+
+**Contributor:** Majd Morad 
 
 ## Week 1
 - Set up **React frontend** and **Express backend**.
