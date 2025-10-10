@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useContext } from "react"; 
+import { UserContext } from "../context/UserContext";
 import { loginUser } from "../services/api";
+
 import {
   Container,
   TextField,
@@ -13,12 +15,32 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const { setUser } = useContext(UserContext); // ✅ Correct useContext placement
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const data = await loginUser(email, password);
-      setMessage(`Welcome ${data.name} (role: ${data.role})`);
+      const user = await loginUser(email, password);
+  
+      // Save user to both localStorage & context
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
+  
+      setMessage(`Welcome ${user.name} (role: ${user.role})`);
+  
+      // ✅ Play car sound
+      const carSound = new Audio("/mixkit-fast-car-drive-by-1538.wav");
+      carSound.volume = 0.7;
+  
+      await carSound.play().catch((err) => {
+        console.warn("Autoplay blocked by browser:", err);
+      });
+  
+      // ✅ Wait 1 second so the sound can play before redirecting
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 3000);
+  
     } catch (error) {
       setMessage(error.response?.data?.message || "Login failed");
     }

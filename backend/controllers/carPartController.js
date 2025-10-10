@@ -1,4 +1,6 @@
 import CarPart from "../models/CarPart.js";
+import { sendEmail } from "../utils/emailService.js";
+import User from "../models/User.js"; // to get all customers
 
 // @desc    Get all car parts (with optional filters + search)
 // @route   GET /api/carparts
@@ -53,6 +55,7 @@ export const createCarPart = async (req, res) => {
   try {
     const { name, description, price, stock, carModel, category, image } = req.body;
 
+    // Create new part first
     const part = new CarPart({
       name,
       description,
@@ -64,6 +67,17 @@ export const createCarPart = async (req, res) => {
     });
 
     const createdPart = await part.save();
+
+    // Notify all customers via email
+    const customers = await User.find({ role: "customer" });
+    const emails = customers.map((u) => u.email);
+
+    await sendEmail(
+      emails,
+      "🆕 New Car Part Added!",
+      `A new car part "${createdPart.name}" has just been added to MMJAuto. Check it out!`
+    );
+
     res.status(201).json(createdPart);
   } catch (error) {
     console.error("Error creating car part:", error);
@@ -76,22 +90,24 @@ export const createCarPart = async (req, res) => {
 // @access  Public (or Admin if you add auth)
 export const updateCarPart = async (req, res) => {
   try {
-    const part = await CarPart.findById(req.params.id);
+    const oldPart = await CarPart.findById(req.params.id);
+    if (!oldPart) return res.status(404).json({ message: "Car part not found" });
 
-    if (part) {
-      part.name = req.body.name || part.name;
-      part.description = req.body.description || part.description;
-      part.price = req.body.price || part.price;
-      part.stock = req.body.stock ?? part.stock;
-      part.carModel = req.body.carModel || part.carModel;
-      part.category = req.body.category || part.category;
-      part.image = req.body.image || part.image;
+    const updatedPart = await CarPart.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-      const updatedPart = await part.save();
-      res.json(updatedPart);
-    } else {
-      res.status(404).json({ message: "Car part not found" });
+    // If restocked (was 0, now > 0), notify customers
+    if (oldPart.stock === 0 && updatedPart.stock > 0) {
+      const customers = await User.find({ role: "customer" });
+      const emails = customers.map((u) => u.email);
+
+      await sendEmail(
+        emails,
+        "✅ Car Part Back in Stock!",
+        `Good news! "${updatedPart.name}" is now back in stock at MMJAuto.`
+      );
     }
+
+    res.json(updatedPart);
   } catch (error) {
     console.error("Error updating car part:", error);
     res.status(500).json({ message: "Server error" });
@@ -104,12 +120,12 @@ export const updateCarPart = async (req, res) => {
 export const deleteCarPart = async (req, res) => {
   try {
     const part = await CarPart.findById(req.params.id);
-    if (part) {
-      await part.remove();
-      res.json({ message: "Car part removed" });
-    } else {
-      res.status(404).json({ message: "Car part not found" });
+    if (!part) {
+      return res.status(404).json({ message: "Car part not found" });
     }
+
+    await part.deleteOne(); 
+    res.json({ message: "Car part removed" });
   } catch (error) {
     console.error("Error deleting car part:", error);
     res.status(500).json({ message: "Server error" });
