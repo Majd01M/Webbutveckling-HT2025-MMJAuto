@@ -38,3 +38,9 @@
 - Finalized UI polish, bug fixes, and tested full functionality.
 
 ---
+
+
+**Contributor:** Mohamad Nour Morad
+
+
+**Contributor:** Jamal Mohsen 
