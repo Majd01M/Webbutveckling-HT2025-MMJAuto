@@ -1,6 +1,7 @@
+import 'dotenv/config'; // auto-load .env
+
 import express from "express";
-import dotenv from "dotenv";
-import cors from "cors"; // 
+import cors from "cors"; 
 import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/authRoutes.js";
@@ -10,7 +11,6 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import { errorHandler } from "./middlewares/errorMiddleware.js";
 
-dotenv.config();
 connectDB();
 
 const app = express();
@@ -21,6 +21,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -33,13 +34,8 @@ app.use("/api/notifications", notificationRoutes);
 app.use(errorHandler);
 
 // Test endpoints
-app.get("/", (req, res) => {
-  res.send("Start page");
-});
-
-app.get("/auth", (req, res) => {
-  res.send("Auth backend is running!");
-});
+app.get("/", (req, res) => res.send("Start page"));
+app.get("/auth", (req, res) => res.send("Auth backend is running!"));
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,14 +1,12 @@
 .sliding-text {
   overflow: hidden;
   white-space: nowrap;
-  display: inline-block;
-  animation: slide 10s linear infinite;
-  color: #ffeb3b; /* yellow for visibility */
+  animation: slideText 8s linear infinite;
+  font-size: 1.2rem;
   font-weight: bold;
-  margin: 0 20px;
 }
 
-@keyframes slide {
+@keyframes slideText {
   0% {
     transform: translateX(100%);
   }

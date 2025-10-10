@@ -11,28 +11,46 @@ export const getCarModelById = async (req, res) => {
   else res.status(404).json({ message: "Car model not found" });
 };
 
+// Create a new car model
 export const createCarModel = async (req, res) => {
-  const { brand, name, year,image } = req.body;
-  const model = new CarModel({ brand, name, year , image });
-  const createdModel = await model.save();
-  res.status(201).json(createdModel);
+  try {
+    const { name, brand, year, image } = req.body; // include image
+    const carModel = await CarModel.create({ name, brand, year, image });
+    res.status(201).json(carModel);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
+
+// Update an existing car model
 export const updateCarModel = async (req, res) => {
-  const model = await CarModel.findById(req.params.id);
-  if (model) {
-    model.brand = req.body.brand || model.brand;
-    model.name = req.body.name || model.name;
-    model.year = req.body.year || model.year;
-    const updatedModel = await model.save();
-    res.json(updatedModel);
-  } else res.status(404).json({ message: "Car model not found" });
+  try {
+    const { id } = req.params;
+    const { name, brand, year, image } = req.body; // include image
+    const carModel = await CarModel.findByIdAndUpdate(
+      id,
+      { name, brand, year, image },
+      { new: true }
+    );
+    if (!carModel) return res.status(404).json({ message: "Car model not found" });
+    res.json(carModel);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 export const deleteCarModel = async (req, res) => {
-  const model = await CarModel.findById(req.params.id);
-  if (model) {
-    await model.remove();
-    res.json({ message: "Car model removed" });
-  } else res.status(404).json({ message: "Car model not found" });
+  try {
+    const model = await CarModel.findById(req.params.id);
+
+    if (!model) {
+      return res.status(404).json({ message: "Car model not found" });
+    }
+
+    await model.deleteOne(); // <-- use deleteOne instead of remove
+    res.json({ message: "Car model deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
