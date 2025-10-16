@@ -36,12 +36,14 @@ export default function WishlistPage() {
     fetchWishlist();
   }, [fetchWishlist]);
 
+  
   const handleRemove = async (partId) => {
     try {
       if (!user) return alert("You must be logged in");
-
+  
       const updated = await removeFromWishlist(partId, user.token);
-      setWishlist(updated); // update immediately
+      setWishlist([...updated]); // ensure React re-renders with a new array
+  
       alert("✅ Removed from wishlist");
     } catch (err) {
       console.error("Failed to remove from wishlist:", err.response?.data || err.message);
@@ -62,7 +64,7 @@ export default function WishlistPage() {
           No favorites yet. Add some car parts!
         </Typography>
       ) : (
-        <Grid container spacing={4}>
+        <Grid container spacing={4} key={wishlist.length}>
           {wishlist.map((item) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={item._id}>
               <Card

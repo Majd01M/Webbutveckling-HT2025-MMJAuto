@@ -118,7 +118,7 @@ export const getWishlist = async (token) => {
 export const removeFromWishlist = async (partId, token) => {
   const res = await axios.post(
     `${API_URL}/wishlist/remove`,
-    { carPartId: partId },  // ✅ matches backend now
+    { carPartId: partId },  // 
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.data; // updated array of carParts
