@@ -1,6 +1,7 @@
 import CarPart from "../models/CarPart.js";
 import { sendEmail } from "../utils/emailService.js";
 import User from "../models/User.js"; // to get all customers
+import Wishlist from "../models/Wishlist.js";
 
 // @desc    Get all car parts (with optional filters + search)
 // @route   GET /api/carparts
@@ -95,17 +96,24 @@ export const updateCarPart = async (req, res) => {
 
     const updatedPart = await CarPart.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-    // If restocked (was 0, now > 0), notify customers
-    if (oldPart.stock === 0 && updatedPart.stock > 0) {
-      const customers = await User.find({ role: "customer" });
-      const emails = customers.map((u) => u.email);
+    // If restocked (was 0 or less, now > 0), notify only users with this part in their wishlist
+if (oldPart.stock <= 0 && updatedPart.stock > 0) {
+  // Find wishlists containing this part
+  const wishlists = await Wishlist.find({ carParts: updatedPart._id }).populate("user");
 
-      await sendEmail(
-        emails,
-        "✅ Car Part Back in Stock!",
-        `Good news! "${updatedPart.name}" is now back in stock at MMJAuto.`
-      );
-    }
+  // Extract emails
+  const emails = wishlists.map(w => w.user.email);
+
+  if (emails.length > 0) {
+    await sendEmail(
+      emails,
+      "✅ Car Part Back in Stock!",
+      `Good news! "${updatedPart.name}" is now back in stock at MMJAuto. Check your wishlist!`
+    );
+  }
+}
+
+
 
     res.json(updatedPart);
   } catch (error) {
