@@ -41,6 +41,7 @@
 
 
 **Contributor:** Mohamad Nour Morad
+
 Week 1
 
 Set up the React frontend and Express backend.
@@ -67,6 +68,7 @@ Created a Wishlist system for customers to manage their saved car parts.
 Developed the Admin Dashboard to control car models and car parts efficiently.
 
 Week 6
+
 Added search bars and buttons for both Car Parts and Car Models to enhance user navigation.
 Implemented notifications for new and restocked car parts.
 Polished the UI, fixed bugs, and finalized testing for full functionality.
