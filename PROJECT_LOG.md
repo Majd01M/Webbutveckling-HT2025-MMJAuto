@@ -74,3 +74,35 @@ Polished the UI, fixed bugs, and finalized testing for full functionality.
 ---
 
 **Contributor:** Jamal Mohsen 
+
+
+Week 1
+
+Set up the React front end and Express back end for the project’s base structure.
+Connected to MongoDB Atlas and organized all routes, controllers, and models.
+
+Week 2
+
+Implemented user registration and login using JWT authentication.
+Created role separation between admin and customer accounts for secure access control.
+
+Week 3
+
+Built the Car Models module with full CRUD operations and form validation.
+Used Material UI to design a clean and intuitive layout for the pages.
+
+Week 4
+
+Developed the Car Parts module with image upload, price, and stock management.
+Refined admin controls for easier updates and added backend validation for reliability.
+
+Week 5
+
+Created a Wishlist system where users can add or remove favorite items.
+Built the Admin Dashboard for managing both Car Models and Car Parts efficiently.
+
+Week 6
+
+Implemented functional search buttons for Car Parts and Car Models to help users find specific items.
+Added a notification system to alert customers about new arrivals and restocks.
+Performed final polishing of the interface, added a car sound on login, and completed system testing. Helped with the search button for both car parts and car models. 
